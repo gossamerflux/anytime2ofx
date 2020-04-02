@@ -81,9 +81,11 @@ export default {
         }
       }
 
-      this.isDownloading = true
-      setTimeout(() => this.isDownloading = false, 2000)
-      this.downloadOfx()
+      this.$nextTick(() => {
+        this.isDownloading = true
+        setTimeout(() => this.isDownloading = false, 2000)
+        this.downloadOfx()
+      })
     },
 
     formatDatetime(date) {
