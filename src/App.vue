@@ -60,7 +60,7 @@ export default {
     parseCsv(event) {
       if(event.target.files[0]) {
         this.filename = event.target.files[0].name.split(".")[0]
-        this.$papa.parse(event.target.files[0], { delimiter: ";", complete: this.processCsv })
+        this.$papa.parse(event.target.files[0], { header: true, delimiter: ";", encoding: "windows-1252", complete: this.processCsv })
       }
     },
 
@@ -68,16 +68,14 @@ export default {
       this.transactions = []
       if(results && results.data) {
         let data = results.data
-        // Discard header row
-        data.shift() 
         
         for(let row of data) {
-          if(!row[0] /* date */ || !row[3] /* amount */) { continue }
+          if(!row['Date'] || !row['Montant']) { continue }
           this.transactions.push({
-            timestamp: row[0],
-            reference: row[1],
-            description: row[2],
-            amount: row[3]
+            timestamp: row['Date'],
+            reference: row['Référence'] || this.generateHash(row),
+            description: row['Description'] || "",
+            amount: row['Montant'],
           })
         }
       }
@@ -91,6 +89,17 @@ export default {
 
     formatDatetime(date) {
       return this.$moment(date).format('YYYYMMDDhhmmss')
+    },
+
+    generateHash(obj) {
+      var str = JSON.stringify(obj)
+      var hash = 0, i, chr;
+      for (i = 0; i < str.length; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return Math.abs(hash);
     }
   },
 
