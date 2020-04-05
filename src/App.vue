@@ -65,6 +65,7 @@ export default {
     },
 
     processCsv(results) {
+      this.transactions = []
       if(results && results.data) {
         let data = results.data
         // Discard header row
@@ -73,7 +74,7 @@ export default {
         for(let row of data) {
           if(!row[0] /* date */ || !row[3] /* amount */) { continue }
           this.transactions.push({
-            date: row[0],
+            timestamp: row[0],
             reference: row[1],
             description: row[2],
             amount: row[3]
