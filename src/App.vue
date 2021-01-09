@@ -71,12 +71,12 @@ export default {
         let data = results.data
         
         for(let row of data) {
-          if(!row['Date'] || !row['Montant']) { continue }
+          if(!row['Date'] || (!row['Montant'] && !row['Amount'])) { continue }
           this.transactions.push({
             timestamp: row['Date'],
-            reference: row['Référence'] || this.generateHash(row),
+            reference: row['Référence'] || row['Reference'] || this.generateHash(row),
             description: row['Description'] || "",
-            amount: row['Montant'],
+            amount: row['Montant'] || row['Amount'],
           })
         }
       }
